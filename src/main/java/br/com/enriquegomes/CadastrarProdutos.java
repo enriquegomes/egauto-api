@@ -194,10 +194,10 @@ public class CadastrarProdutos extends HttpServlet {
             Integer id = Integer.parseInt(idSemBarra);
             
             try {
-                PreparedStatement comandoSQL = con.prepareStatement("UPDATE TB_PRODUTOS SET NOMEPROD = '?', QTD = ? WHERE COD_PROD = ?");
-                comandoSQL.setString(1, nomeProduto);
-                comandoSQL.setInt(2, quantidadeProduto);
-                comandoSQL.execute();
+                //PreparedStatement comandoSQL = con.prepareStatement("UPDATE TB_PRODUTOS SET NOMEPROD = '?', QTD = ? WHERE COD_PROD = ?");
+                //comandoSQL.setString(1, nomeProduto);
+               // comandoSQL.setInt(2, quantidadeProduto);
+                //comandoSQL.execute();
             } catch (Exception e) {
                 System.out.println("Erro ao executar o comando SQL: " + e.getMessage());
             }
