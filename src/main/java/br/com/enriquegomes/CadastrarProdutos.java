@@ -181,26 +181,35 @@ public class CadastrarProdutos extends HttpServlet {
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (req.getRequestURI().startsWith("/egautopecas-api/produtos/editar/")) {
             
-            System.out.println("Entrou no Delete");
+            System.out.println("Entrou no Editar");
 
             Conexao conexao = new Conexao();
 
             Connection con = conexao.conectar();
-            
+            //Id
             String idProdDaURL = req.getPathInfo();
 
             String idSemBarra = idProdDaURL.substring(1);
 
             Integer id = Integer.parseInt(idSemBarra);
             
-            try {
-                //PreparedStatement comandoSQL = con.prepareStatement("UPDATE TB_PRODUTOS SET NOMEPROD = '?', QTD = ? WHERE COD_PROD = ?");
-                //comandoSQL.setString(1, nomeProduto);
-               // comandoSQL.setInt(2, quantidadeProduto);
-                //comandoSQL.execute();
-            } catch (Exception e) {
-                System.out.println("Erro ao executar o comando SQL: " + e.getMessage());
-            }
+            System.out.println(idProdDaURL);
+            // Atributos
+
+            String nomeEditado = req.getParameter("editname");
+
+            Produto p = new Produto();
+
+            p.nome = nomeEditado;
+            
+            System.out.println(p.nome);
+            
+            Integer quantidadeEditada = Integer.parseInt(req.getParameter("editqtd"));
+
+            p.quantidade = quantidadeEditada;
+            
+            
+          
         }
             
     }
