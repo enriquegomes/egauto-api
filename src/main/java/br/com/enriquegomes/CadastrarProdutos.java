@@ -1,12 +1,15 @@
 package br.com.enriquegomes;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -111,42 +114,41 @@ public class CadastrarProdutos extends HttpServlet {
 
             resp.getWriter().print(resultadoSemAVirgulaExtra);
         } else if (req.getRequestURI().startsWith("/egautopecas-api/produtos/editar/")) {
-            
+
             System.out.println("Entrou no Editar");
 
             Conexao conexao = new Conexao();
 
             Connection con = conexao.conectar();
-            
+
             String idProdDaURL = req.getPathInfo();
 
             String idSemBarra = idProdDaURL.substring(1);
 
             Integer id = Integer.parseInt(idSemBarra);
-            
-            String infosEdit="";
-            
+
+            String infosEdit = "";
+
             try {
-                ResultSet valores = con.prepareStatement("SELECT * FROM TB_PRODUTOS WHERE COD_PROD = "+ id).executeQuery();
-                
+                ResultSet valores = con.prepareStatement("SELECT * FROM TB_PRODUTOS WHERE COD_PROD = " + id).executeQuery();
+
                 valores.next();
-                
+
                 Produto p = new Produto();
                 p.id = valores.getLong("COD_PROD");
-                
+
                 p.nome = valores.getString("NOMEPROD");
-                
+
                 p.quantidade = valores.getInt("QTD");
-                   
-                infosEdit= "{\"id\":" + p.id + ",\"nome\":\"" + p.nome + "\",\"quantidade\":" + p.quantidade + "}";
-                
-                
+
+                infosEdit = "{\"id\":" + p.id + ",\"nome\":\"" + p.nome + "\",\"quantidade\":" + p.quantidade + "}";
+
             } catch (Exception e) {
                 System.out.println("Erro ao executar o SQL: " + e.getMessage());
             }
-            
+
             resp.getWriter().print(infosEdit);
-            
+
         }
 
     }
@@ -180,38 +182,54 @@ public class CadastrarProdutos extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         if (req.getRequestURI().startsWith("/egautopecas-api/produtos/editar/")) {
-            
+
             System.out.println("Entrou no Editar");
 
             Conexao conexao = new Conexao();
 
             Connection con = conexao.conectar();
-            //Id
+
             String idProdDaURL = req.getPathInfo();
 
             String idSemBarra = idProdDaURL.substring(1);
 
-            Integer id = Integer.parseInt(idSemBarra);
+            Long id = Long.parseLong(idSemBarra);
             
-            System.out.println(idProdDaURL);
-            // Atributos
+            System.out.println(id);
 
-            String nomeEditado = req.getParameter("editname");
+            BufferedReader br = new BufferedReader(new InputStreamReader(req.getInputStream()));
 
+            //nome=Iam&quantidade=432
+            String dados = br.readLine();
+            
+            String nome = dados.substring(5, dados.indexOf("&"));
+            
+            int indiceEComercial = dados.indexOf("&");
+            
+            dados = dados.substring(indiceEComercial + 1);
+            
+            String quantidade = dados.substring(11);
+            
             Produto p = new Produto();
-
-            p.nome = nomeEditado;
             
-            System.out.println(p.nome);
+            p.id = id;
             
-            Integer quantidadeEditada = Integer.parseInt(req.getParameter("editqtd"));
-
-            p.quantidade = quantidadeEditada;
+            p.nome = nome;
             
+            p.quantidade = Integer.parseInt(quantidade);
             
-          
+            try{
+                PreparedStatement comandosql = con.prepareStatement("UPDATE TB_PRODUTOS SET NOMEPROD = ?, QTD = ? WHERE COD_PROD=?");
+                comandosql.setString(1, p.nome);
+                comandosql.setInt(2, p.quantidade);
+                comandosql.setLong(3, p.id);
+                comandosql.execute();
+                     
+            }catch(Exception e){
+                System.out.println("Erro ao executar o SQL: " + e.getMessage());
+            }
         }
-            
+
     }
     
     

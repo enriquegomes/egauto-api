@@ -18,7 +18,7 @@ public class Conexao {
         }
         
         usuario = "root";
-        senha = "1234";
+        senha = "G85wc+";
         url = "jdbc:mysql://localhost:3306/egauto?useSSL=false&serverTimezone=UTC";
         
         try {
