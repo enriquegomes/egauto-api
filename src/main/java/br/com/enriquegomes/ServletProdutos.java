@@ -68,6 +68,49 @@ public class ServletProdutos extends HttpServlet {
 
     }
 
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        if(req.getRequestURI().equals("/egautopecas-api/pedidos")){
+            
+            System.out.println("Entrou no GET");
+            
+            Conexao conexao = new Conexao();
+
+            Connection con = conexao.conectar();
+            
+            List listaPedidos = new ArrayList();
+            
+            try{
+                ResultSet result = con.prepareStatement("SELECT * FROM TB_PEDIDOS JOIN TB_PRODUTOS ON(TB_PEDIDOS.COD_PROD = TB_PRODUTOS.COD_PROD) JOIN TB_CLIENTES ON(TB_PEDIDOS.COD_CLIENT = TB_CLIENTES.COD_CLIENT)").executeQuery();
+                
+                while(!result.isLast()){
+                   Pedidos p = new Pedidos();
+                   
+                   Produto prod = new Produto();
+                   
+                   Clientes c = new Clientes();
+                   
+                   result.next();
+                   
+                   prod.nome = result.getString("NOMEPROD");
+                   
+                   c.nome = result.getString("NOMECLIENT");
+                    
+                   p.cliente = c;
+                   
+                   p.produto = prod;
+                   
+                   listaPedidos.add(p);
+                }
+                
+            }catch (SQLException e) {
+                System.out.println("Erro ao executar o SQL: " + e.getMessage());
+            }
+                
+            
+        }
+    }
+
 
 
 }

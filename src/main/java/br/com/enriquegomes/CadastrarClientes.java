@@ -117,7 +117,6 @@ public class CadastrarClientes extends HttpServlet {
 
         } else if (req.getRequestURI().startsWith("/egautopecas-api/clientes/editar/")) {
 
-            System.out.println("Entrou no Editar");
 
             Conexao conexao = new Conexao();
 
@@ -190,7 +189,7 @@ public class CadastrarClientes extends HttpServlet {
 
         if (req.getRequestURI().startsWith("/egautopecas-api/clientes/editar/")) {
 
-            System.out.println("Entrou no Editar");
+            System.out.println("Entrou no PUT");
 
             Conexao conexao = new Conexao();
 
@@ -201,7 +200,8 @@ public class CadastrarClientes extends HttpServlet {
             String idSemBarra = idProdDaURL.substring(1);
 
             Long id = Long.parseLong(idSemBarra);
-
+            
+            
             BufferedReader br = new BufferedReader(new InputStreamReader(req.getInputStream()));
             //nome=faroll&email=eee&cpf=999
             //nome=Iam&quantidade=432
@@ -219,8 +219,8 @@ public class CadastrarClientes extends HttpServlet {
             
             dados = dados.substring(ultimoEComercial + 1);
             
-            String email = dados.substring(6, dados.indexOf("&"));
-
+            String email = dados.substring(6);
+            
             Clientes c = new Clientes();
 
             c.nome = nome;
